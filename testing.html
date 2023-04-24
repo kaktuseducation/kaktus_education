@@ -87,12 +87,14 @@
     
     
     <script>
-        let counter = 0;                                    // счетчик для цикла
+      
         let tasks = [];                                     // массив всех соответсвий
         let curr_tasks = [];                                // массив текущих соответсвий
         var input = document.getElementById('input_file');  // файл excel
         let test = true;                                    // выбор ручной ввод-тест
-        let starting = false;                                  // нажатие кнопки "Начать"
+        let counter = 0;                                    // счетчик массива
+        let n_counter = 0;                                  // счетчик обновлений
+        let n_update = 10;                                  // количество обновлений для базы данных
         
         document.getElementById('easyratio').checked = true;
         
@@ -200,13 +202,29 @@
             else
             {
                 array[counter].luck--;
-                alert('Всмысле ' + answer + '? Вообще-то ' + array[counter].answer)
+                alert('Всмысле ' + answer + '? Вообще-то ' + array[counter].answer );
                 //document.getElementById("intro_step2").innerHTML = 'Всмысле ' + answer + '? Вообще-то ' + array[counter].answer
             }
-
+            
             counter++;
-            if (counter + 1> array.length)
-                menu()
+            n_counter++; 
+            
+            if (counter == array.length)
+            {
+                counter = 0;
+                mix(curr_tasks);
+            }   
+            
+            if (n_counter == n_update)
+                if (confirm("Вы молодец! Хотите продолжить?"))
+                {
+                    n_counter = 0;
+                    counter = 0;
+                    curr_tasks = selection(tasks);
+                    mix(curr_tasks);
+                } 
+                else end();
+            
             interview(curr_tasks);
         }
 
@@ -261,9 +279,7 @@
         }
             
         function start()                                    // начало работы
-        {
-            starting = true;
-            
+        {            
             document.getElementById('inner_rec').hidden = true;
             document.getElementById('begin').style.visibility = "hidden";
             document.getElementById('question').hidden = false;
@@ -299,53 +315,11 @@
         function test_on()
         {
             test = true;
-            
-            if(starting)
-            {
-                document.getElementById('answer').hidden = true;
-                document.getElementById('answer1').hidden = false;
-                document.getElementById('answer2').hidden = false;
-                document.getElementById('answer3').hidden = false;
-                document.getElementById('answer4').hidden = false;
-
-                document.getElementById('radio1').hidden = false;
-                document.getElementById('radio2').hidden = false;
-                document.getElementById('radio3').hidden = false;
-                document.getElementById('radio4').hidden = false;
-
-                select_answers(curr_tasks);
-            }
         }
         
         function test_off()
         {
             test = false;
-            
-            if(starting)
-            {
-                document.getElementById('answer').hidden = false;
-                document.getElementById('answer1').hidden = true;
-                document.getElementById('answer2').hidden = true;
-                document.getElementById('answer3').hidden = true;
-                document.getElementById('answer4').hidden = true;
-
-                document.getElementById('radio1').hidden = true;
-                document.getElementById('radio2').hidden = true;
-                document.getElementById('radio3').hidden = true;
-                document.getElementById('radio4').hidden = true;
-
-                document.getElementById('answer').value = '';
-            }
-        }
-        
-        function menu()
-        {
-            if (confirm("Вы молодец! Хотите продолжить?"))
-            {
-                counter = 0;
-                start();
-            } 
-            else end();
         }
         
         function end()
