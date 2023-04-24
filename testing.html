@@ -87,12 +87,15 @@
     
     
     <script>
-        let counter = 0;                                    // счетчик для цикла
+      
         let tasks = [];                                     // массив всех соответсвий
         let curr_tasks = [];                                // массив текущих соответсвий
         var input = document.getElementById('input_file');  // файл excel
         let test = true;                                    // выбор ручной ввод-тест
-        let starting = false;                                  // нажатие кнопки "Начать"
+        let starting = false;                               // нажатие кнопки "Начать"
+        let counter = 0;                                    // счетчик массива
+        let n_counter = 0;                                  // счетчик обновлений
+        let n_update = 10;                                  // количество обновлений для базы данных
         
         document.getElementById('easyratio').checked = true;
         
@@ -205,8 +208,19 @@
             }
 
             counter++;
-            if (counter + 1> array.length)
-                menu()
+            n_counter++;
+            
+            if (counter > array.length)
+                counter = 0
+            
+            if (n_cointer == n_update)
+                if (confirm("Вы молодец! Хотите продолжить?"))
+                {
+                    n_counter = 0;
+                    start();
+                } 
+                else end();
+            
             interview(curr_tasks);
         }
 
@@ -337,17 +351,6 @@
                 document.getElementById('answer').value = '';
             }
         }
-        
-        function menu()
-        {
-            if (confirm("Вы молодец! Хотите продолжить?"))
-            {
-                counter = 0;
-                start();
-            } 
-            else end();
-        }
-        
         function end()
         {
             var blob = new Blob([JSON.stringify(tasks)], {type: "text/javascript"});
